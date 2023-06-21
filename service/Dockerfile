@@ -3,8 +3,7 @@ LABEL authors="slopez"
 
 WORKDIR /opt/auth_server
 
-COPY requirements.txt /tmp
-RUN pip install -r /tmp/requirements.txt
 COPY authenticator ./
+RUN pip install -e .
 
-ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
+ENTRYPOINT ["gunicorn", "-w","1","-b","0.0.0.0:5000","authenticator.src.wsgi:app"]
