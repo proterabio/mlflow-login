@@ -4,22 +4,47 @@ services:
     image: amazon/dynamodb-local
     container_name: dynamodb
 
+  postgres:
+    container_name: postgresql
+    image: postgres:latest
+    env_file:
+      - ./postgres/dev.env
+  s3:
+    image: localstack/localstack
+    container_name: localstack.s3
+    environment:
+      - SERVICES=s3
+    volumes:
+      - ./localstack:/docker-entrypoint-initaws.d
+
   flask:
     build:
       context: service
     depends_on:
-      dynamo:
-        condition: service_healthy
+      - dynamo
     container_name: flask
     env_file:
       - ./service/dev.env
+
+  mlflow:
+    build:
+      context: mlflow
+    container_name: mlflow
+    image: custom-mlflow:latest
+    restart: on-failure
+    depends_on:
+      - postgres
+      - s3
+    env_file:
+      - ./mlflow/dev.env
+    ports:
+      - '3000:5000'
 
   nginx:
     build:
       context: nginx
     container_name: nginx
     volumes:
-      - ./nginx/.htpasswd:/etc/apache2/.htpasswd
-      - ./html:/data/www
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - '80:80'
