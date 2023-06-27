@@ -1,5 +1,19 @@
 version: '3.9'
 services:
+  dynamo:
+    image: amazon/dynamodb-local
+    container_name: dynamodb
+
+  flask:
+    build:
+      context: service
+    depends_on:
+      dynamo:
+        condition: service_healthy
+    container_name: flask
+    env_file:
+      - ./service/dev.env
+
   nginx:
     build:
       context: nginx
@@ -9,8 +23,3 @@ services:
       - ./html:/data/www
     ports:
       - '80:80'
-
-  flask:
-    build:
-      context: service
-    container_name: flask

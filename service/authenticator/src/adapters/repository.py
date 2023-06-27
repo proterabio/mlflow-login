@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from botocore.exceptions import ClientError
 
@@ -7,7 +7,7 @@ from authenticator.src.domain import model
 
 class DynamoDBError(Exception):
     def __init__(self, message: str):
-        self.context = {'httpCode': 500, 'exceptionType': self.__class__.__name__}
+        self.http_code = 500
         super().__init__(message)
 
 
@@ -25,6 +25,19 @@ class UsersRepository:
 
     def update(self, item: model.User) -> Dict:
         return self.add(item=item)
+
+    def get_by_email(self, email: str) -> Optional[model.User]:
+        response = self.table.get_item(Key={self.key: email})
+        assert isinstance(response, dict)
+        item = response.get('Item')
+
+        if not item:
+            return None
+
+        return model.User(**item)
+
+    def delete(self, email: str) -> None:
+        self.table.delete_item(Key={self.key: email})
 
     def create_table(self) -> Dict:
         try:
