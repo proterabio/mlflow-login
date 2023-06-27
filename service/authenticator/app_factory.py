@@ -9,3 +9,6 @@ def create_app():
         current_app.http_auth = HTTPBasicAuth()
 
     return app
+
+
+app_instance = create_app()

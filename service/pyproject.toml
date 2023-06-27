@@ -20,9 +20,3 @@ build-backend = "setuptools.build_meta"
 pythonpath = ["authenticator/src"]
 testpaths = "tests"
 addopts = "-v"
-
-[project.scripts]
-launch-madi = "madi.__main__:start_server"
-
-[tool.setuptools.package-data]
-"madi.src.static" = ["*.csv", "*.a3m", "*.json", "*.pdb"]
