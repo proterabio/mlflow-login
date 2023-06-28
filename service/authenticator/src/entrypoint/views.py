@@ -6,10 +6,10 @@ from authenticator.src.service_layer import users
 from authenticator.src.service_layer.users import http_auth
 
 
-@sessions.route('/', methods=['GET'])
+@sessions.route('/auth', methods=['GET'])
 @http_auth.login_required
-def index():
-    return f'ok, {http_auth.current_user()}', 200
+def authentication():
+    return {'user': http_auth.current_user()}, 200
 
 
 @sessions.route('/users', methods=['POST'])

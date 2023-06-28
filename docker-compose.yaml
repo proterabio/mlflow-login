@@ -29,8 +29,6 @@ services:
       - ./service/dev.env
     volumes:
       - ./service/authenticator:/opt/authenticator
-    ports:
-      - '3000:5000'
 
   mlflow:
     build:
