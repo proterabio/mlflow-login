@@ -10,4 +10,4 @@ COPY tests ./tests
 COPY pyproject.toml .
 RUN pip install -e .
 
-ENTRYPOINT ["gunicorn", "-w","1","-b", "0.0.0.0:5000", "authenticator.app_factory:app_instance"]
+ENTRYPOINT ["gunicorn", "-w","1","-b", "0.0.0.0:5000", "--reload" ,"authenticator.app_factory:app_instance"]

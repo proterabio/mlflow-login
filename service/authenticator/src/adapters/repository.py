@@ -2,6 +2,7 @@ from typing import Dict, Optional
 
 from botocore.exceptions import ClientError
 
+from authenticator.src import config
 from authenticator.src.domain import model
 
 
@@ -12,7 +13,7 @@ class DynamoDBError(Exception):
 
 
 class UsersRepository:
-    def __init__(self, resource, table_name: str):
+    def __init__(self, resource, table_name: str = config.users_table()):
         self.session = resource
         self.table_name = table_name
         self.table = self.session.Table(self.table_name)
@@ -34,7 +35,12 @@ class UsersRepository:
         if not item:
             return None
 
-        return model.User(**item)
+        user = model.User(
+            username=item['username'],
+            email=item['email']
+        )
+        setattr(user, '_password', item['password'])
+        return user
 
     def delete(self, email: str) -> None:
         self.table.delete_item(Key={self.key: email})

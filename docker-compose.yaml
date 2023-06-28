@@ -24,8 +24,13 @@ services:
     depends_on:
       - dynamo
     container_name: stack.flask
+    restart: on-failure
     env_file:
       - ./service/dev.env
+    volumes:
+      - ./service/authenticator:/opt/authenticator
+    ports:
+      - '3000:5000'
 
   mlflow:
     build:
@@ -38,8 +43,6 @@ services:
       - s3
     env_file:
       - ./mlflow/dev.env
-    ports:
-      - '3000:5000'
 
   nginx:
     build:

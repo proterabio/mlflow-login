@@ -1,9 +1,12 @@
+from typing import Optional
+
 from flask import current_app
+from flask_httpauth import HTTPBasicAuth
 
 from authenticator.src.adapters import repository
 from authenticator.src.domain import model
 
-auth = current_app.http_auth
+http_auth = HTTPBasicAuth()
 
 
 class UserNotFound(Exception):
@@ -30,18 +33,24 @@ exceptions = (
 )
 
 
-@auth.verify_password
-def authenticate_user(
-        email: str,
+@http_auth.verify_password
+def verify_password(
+        username: str,
         password: str,
-        users_repo: repository.UsersRepository,
-) -> str:
-    user = users_repo.get_by_email(email=email)
+) -> Optional[str]:
+    users_repo = repository.UsersRepository(
+        resource=current_app.dynamo_resource
+    )
+
+    if not username or not password:
+        return None
+
+    user = users_repo.get_by_email(email=username)
     if not user:
-        raise FailedAuth('wrong email or password')
+        return None
 
     if not user.check_password(value=password):
-        raise FailedAuth('wrong email or password')
+        return None
 
     return user.username
 
