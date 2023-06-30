@@ -29,6 +29,7 @@ services:
       - ./service/dev.env
     volumes:
       - ./service/authenticator:/opt/authenticator
+      - ./service/tests:/opt/tests
 
   mlflow:
     build:
