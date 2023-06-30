@@ -37,7 +37,7 @@ def add_user():
             )
         )
     except exceptions as error:
-        return {'message': {'error': str(error)}}, error.code
+        return {'message': {'error': str(error)}}, error.http_code
 
     return {'message': 'ok'}, 201
 
@@ -53,6 +53,6 @@ def remove_user(email):
             )
         )
     except exceptions as error:
-        return {'message': {'error': str(error)}}, error.code
+        return {'message': {'error': str(error)}}, error.http_code
 
     return {'message': 'ok'}, 201

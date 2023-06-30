@@ -25,7 +25,7 @@ class FailedAuth(Exception):
 
 class DuplicatedEmail(Exception):
     def __init__(self, message: str):
-        self.http_code = 422
+        self.http_code = 409
         super().__init__(message)
 
 
