@@ -1,12 +1,14 @@
 from typing import Optional
 
 from flask import current_app
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 
+from authenticator.src import config
 from authenticator.src.adapters import repository
 from authenticator.src.domain import model
 
 http_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth(scheme='Bearer')
 
 
 class UserNotFound(Exception):
@@ -55,6 +57,11 @@ def verify_password(
     return user.username
 
 
+@token_auth.verify_token
+def verify_token(token: str) -> Optional[str]:
+    return token if token == config.get_master_token() else None
+
+
 def create_user(
         username: str,
         email: str,
@@ -77,6 +84,10 @@ def delete_user(
         email: str,
         users_repo: repository.UsersRepository,
 ) -> None:
+    user = users_repo.get_by_email(email=email)
+    if not user:
+        raise UserNotFound(f'the user <{email}> does not exist')
+
     users_repo.delete(email=email)
 
 
@@ -88,7 +99,7 @@ def update_user(
 ) -> None:
     user = users_repo.get_by_email(email=email)
     if not user:
-        raise UserNotFound('user not found')
+        raise UserNotFound(f'the user <{email}> does not exist')
 
     user.email = email
     user.username = username

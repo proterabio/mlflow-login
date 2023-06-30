@@ -9,5 +9,6 @@ COPY pyproject.toml .
 COPY authenticator ./authenticator
 RUN pip install -e .
 COPY tests ./tests
+COPY start_server.sh .
 
-ENTRYPOINT ["gunicorn", "-w","1","-b", "0.0.0.0:5000", "--reload" ,"authenticator.app_factory:app_instance"]
+ENTRYPOINT ./start_server.sh

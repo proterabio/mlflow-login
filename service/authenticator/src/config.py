@@ -22,3 +22,7 @@ def dynamodb_config() -> Dict:
     }
 
     return production_config if is_production() else development_config
+
+
+def get_master_token() -> str:
+    return os.getenv('MASTER_TOKEN')
