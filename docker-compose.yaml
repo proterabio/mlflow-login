@@ -11,12 +11,15 @@ services:
       - ./postgres/dev.env
 
   s3:
-    image: localstack/localstack
+    image: localstack/localstack:latest
     container_name: stack.s3
     environment:
       - SERVICES=s3
     volumes:
-      - ./localstack:/docker-entrypoint-initaws.d
+      - ./localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+
+    ports:
+      - '4000:4566'
 
   flask:
     build:
