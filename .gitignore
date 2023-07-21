@@ -1,3 +1,5 @@
 .idea
 venv
 /service/.pytest_cache/
+/mlflow/production.env
+/service/production.env

@@ -3,6 +3,7 @@ LABEL authors="slopez"
 
 WORKDIR /opt/mlflow
 
+RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install boto3 psycopg2-binary mlflow[extras]
 COPY start_server.sh .
 

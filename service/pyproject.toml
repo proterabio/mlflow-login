@@ -4,6 +4,7 @@ version = "1.0.0"
 dependencies = [
     "flask",
     "Flask-HTTPAuth",
+    "psycopg2-binary",
     "pytest",
     "gunicorn",
     "boto3",
