@@ -1,9 +1,5 @@
 version: '3.9'
 services:
-  dynamo:
-    image: amazon/dynamodb-local
-    container_name: stack.dynamo
-
   postgres:
     container_name: stack.postgres
     image: postgres:latest
@@ -21,21 +17,6 @@ services:
     ports:
       - '4000:4566'
 
-  flask:
-    platform: linux/amd64
-    build:
-      context: service
-    depends_on:
-      - dynamo
-    container_name: stack.flask
-    image: mlflow-auth:latest
-    restart: on-failure
-    env_file:
-      - ./service/dev.env
-    volumes:
-      - ./service/authenticator:/opt/authenticator
-      - ./service/tests:/opt/tests
-
   mlflow:
     build:
       context: mlflow
@@ -48,14 +29,5 @@ services:
       - s3
     env_file:
       - ./mlflow/dev.env
-
-  nginx:
-    build:
-      context: nginx
-    container_name: stack.nginx
-    image: mlflow-nginx:latest
-    platform: linux/amd64
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - '80:80'
+      - '80:3000'
